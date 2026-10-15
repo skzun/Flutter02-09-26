@@ -5,10 +5,8 @@ import 'package:flutter_application_2/helper.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
-  // Garante a inicialização correta dos Widgets do Flutter
   WidgetsFlutterBinding.ensureInitialized();
 
-  // SE ESTIVER RODANDO NO WINDOWS OU LINUX, INICIALIZA O MOTOR FFI
   if (Platform.isWindows || Platform.isLinux) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
@@ -29,10 +27,8 @@ class _MyAppState extends State<MyApp> {
   TextEditingController controlaDono = TextEditingController();
   TextEditingController controlaIdade = TextEditingController();
 
-  // Lista que guarda os dados vindos do banco de dados
   List<Map<String, dynamic>> caes = [];
 
-  // Carrega todos os registros da tabela 'caes'
   Future<void> carregarPets() async {
     List<Map<String, dynamic>> dados = await DatabaseHelper.listarCaos();
     setState(() {
@@ -41,20 +37,16 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> salvarNoBanco() async {
-    // Monta o mapa com os dados no formato que a tabela espera
     Map<String, dynamic> novoCao = {
       'nome': controlaNome.text,
       'dono': controlaDono.text,
       'idade': int.tryParse(controlaIdade.text) ?? 0,
     };
 
-    // Salva no banco de dados local usando nossa classe auxiliar
     await DatabaseHelper.inserirCao(novoCao);
 
-    // Feedback
     print('${controlaNome.text} salvo com sucesso!');
 
-    // Limpa os campos e recarrega a lista
     setState(() {
       controlaNome.text = '';
       controlaDono.text = '';
@@ -66,7 +58,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    // Já carrega os pets salvos quando o app abre
     carregarPets();
   }
 
@@ -141,7 +132,6 @@ class _MyAppState extends State<MyApp> {
                     return ListTile(
                       leading: const Icon(Icons.pets),
                       title: Text('${cao['nome']} - dono: ${cao['dono']}'),
-                      // Mostra a idade do pet vinda do banco de dados
                       subtitle: Text('Idade: ${cao['idade']} anos'),
                     );
                   },
